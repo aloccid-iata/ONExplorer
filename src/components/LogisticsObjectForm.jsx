@@ -130,9 +130,10 @@ const createTypedValue = (val = '', dataType) => {
         '@value': String(val)
       };
     case 'datetime':
+      console.log('datetime', val)
       return {
         '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-        '@value': String(val)
+        '@value': Date.parse(val).toString()
       };
     default:
       return val;
@@ -364,7 +365,6 @@ const FormField = memo(({ field, value, onChange }) => {
               }
               onChange={(newValue) => {
                 let processedValue;
-                
                 switch(subField.dataType) {
                   case 'url':
                     processedValue = {
@@ -392,7 +392,7 @@ const FormField = memo(({ field, value, onChange }) => {
                   case 'datetime':
                     processedValue = {
                       '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-                      '@value': String(newValue)
+                      '@value': Date.parse(newValue).toString()
                     };
                     break;
                   default:
@@ -502,6 +502,7 @@ const LogisticsObjectForm = ({ objectType, initialData, onSubmit }) => {
     }
 
     let newValue;
+    console.log('handleFieldChange', fieldName, value, fieldDataType, fieldType)
     switch(fieldDataType) {
       case 'url':
         if (fieldType !== 'fieldset') {
@@ -534,10 +535,10 @@ const LogisticsObjectForm = ({ objectType, initialData, onSubmit }) => {
         };
         break;
         
-      case 'datetime':
+      case 'datetime-local':
         newValue = {
           '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-          '@value': String(value)
+          '@value': Date.parse(value).toString()
         };
         break;
         
@@ -581,7 +582,7 @@ const LogisticsObjectForm = ({ objectType, initialData, onSubmit }) => {
                     return parseInt(formData[field.name]?.['@value'] || '0', 10);
                   case 'double':
                     return parseFloat(formData[field.name]?.['@value'] || '0');
-                  case 'datetime':
+                  case 'datetime-local':
                     return formData[field.name]?.['@value'] || '';
                   default:
                     return formData[field.name];
